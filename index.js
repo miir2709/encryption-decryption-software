@@ -29,29 +29,28 @@ $inputDiv.on('dragover', function(e) {
 async function dropHandler(e) {
     e.preventDefault();
     var files = e.originalEvent.dataTransfer.files
+    console.log("files: "+files)
     if (files) {
         Swal.fire({
-            title: 'Enter a key:',
+            title: 'Enter a security key:',
             input: 'text',
             showCancelButton: true,
             confirmButtonText: 'Go!',
             allowOutsideClick: false,
-        }).then((res) => {
+        }).then((res) => { // entered security key
             if (res.value) {
-                // console.log(res.value);
+                console.log(res.value);
                 var numFiles = files.length;
                 let enc = new TextEncoder();
                 var keyAsBytes = enc.encode(res.value);
+                console.log(keyAsBytes);
                 for (var i = 0; i < files.length; i++) {
-                    ipcRenderer.send('ondragstart', files[i].path)
+                    ipcRenderer.send('ondragstart', files[i].path);
+                    console.log(files[i]);
                 }
-                var today = new Date();
-
-                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                console.log("time before" + time);
+                console.log("hello i am going into handleFiles: ");
                 handleFiles(files, keyAsBytes);
-                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                console.log("time after" + time);
+                console.log("bye i completed hellofiles");
                 Swal.fire({
                     title: "Your file" + (numFiles > 1 ? "s are" : " is") + " being processed.",
                 });
@@ -66,12 +65,12 @@ async function dropHandler(e) {
 }
 
 function handleFiles(files, keyAsBytes) {
-    console.log(files);
+    console.log("Inside handleFiles: files: "+files);
     for (var i = 0; i < files.length; i++) {
         var f = files[i];
         console.log(f);
-        // console.log("about to spawn worker");
-        var w = new Worker('resources/fileHandler.js');
+        console.log("about to spawn worker");
+        var w = new Worker('resources/fileHandler.js'); // worker thread can perform tasks without interfering with the user interfac
         w.postMessage([f, keyAsBytes]);
         w.onmessage = function(e) {
             if(e.data.status!="success"){

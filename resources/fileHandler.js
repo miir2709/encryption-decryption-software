@@ -96,7 +96,7 @@ async function decryptFile(file, bytes, keyAsBytes) {
     const salt = bytes.slice(0, 32);
     const iv = bytes.slice(32, 44);
     const encryptedData = bytes.slice(44);
-    // console.log(salt, iv, encryptedData, bytes);
+    console.log(salt, iv, encryptedData, bytes);
     return importSecretKey(keyAsBytes)
         .then((cryptoKey) => {
             return crypto.subtle.deriveKey({
