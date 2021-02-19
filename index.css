@@ -1,0 +1,26 @@
+body{
+    margin: 0;
+}
+
+#inputDiv{
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    z-index: -1;
+    background-color: #090821;
+    width: 100vw;
+    height: 100vh;
+}
+
+#inputDiv p{
+    font-family: 'Raleway', sans-serif;
+    color: #F5F0F6;
+    margin: 0;
+    font-size: 3em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: default;
+}
