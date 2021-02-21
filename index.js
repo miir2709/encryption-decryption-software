@@ -64,7 +64,8 @@ function handleFiles(files, keyAsBytes) {
     console.log("Inside handleFiles:");
     for (var i = 0; i < files.length; i++) {
         var f = files[i];
-        console.log("file object has an attribute `path`: "+f.path);
+        console.log("file object has an attribute `path`: " + f.path);
+        console.log(f.name);
         var w = new Worker('resources/fileHandler.js'); // worker thread can perform tasks without interfering with the user interface
         w.postMessage([f, keyAsBytes]);
         w.onmessage = function (e) { // e is the event
@@ -88,7 +89,14 @@ function handleFiles(files, keyAsBytes) {
                     });
                     console.log("blob: " + blob.type);
                     var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
+                    console.log(link);
+                    link.href = window.URL.createObjectURL(blob); // https://stackoverflow.com/questions/25547475/save-to-local-file-from-blob "which is a special url that points to an object in the browser's memory) :"
+                    console.log("link href: " + link.href);
+                    if (f.name.split('.').pop() == "dcrypt") {
+                        // call video player function
+                        // console.log("success");
+                    }
+                    // else save the file
                     link.download = e.data.fileNameToSave;
                     link.click();
                 })
