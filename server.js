@@ -8,14 +8,17 @@ const fs = require('fs');
 const {
     app,
     BrowserWindow,
-    ipcMain
+    ipcMain,
+    Menu
 } = require('electron')
 
-require('electron-reload')(__dirname);
+const shell = require('electron').shell
 
+require('electron-reload')(__dirname);
 function createWindow() {
     // Create the browser window.
     let win = new BrowserWindow({
+        backgroundColor: '#2e2c29',
         width: 970,
         height: 600,
         webPreferences: {
@@ -26,24 +29,60 @@ function createWindow() {
     win.loadFile('index.html')
 }
 
-// ipcMain.on('ondragstart', (event, filePath) => {
-
-//     readFile(filePath);
-
-//     function readFile(filepath) {
-//         fs.readFile(filepath, 'utf-8', (err, data) => {
-
-//             if (err) {
-//                 alert("An error ocurred reading the file :" + err.message)
-//                 return
-//             }
-//             console.log("hello there. uploading the file!!");
-//             // handle the file content
-//             event.sender.send('fileData', data)
-//         })
-//     }
-
-// })
-
-
+const template = [
+    {
+       label: 'View',
+       submenu: [
+          {
+             role: 'reload'
+          },
+          {
+             role: 'toggledevtools'
+          },
+          {
+             type: 'separator'
+          },
+          {
+             role: 'resetzoom'
+          },
+          {
+             role: 'zoomin'
+          },
+          {
+             role: 'zoomout'
+          },
+          {
+             type: 'separator'
+          },
+          {
+             role: 'togglefullscreen'
+          }
+       ]
+    },
+    {
+       role: 'window',
+       submenu: [
+          {
+             role: 'minimize'
+          },
+          {
+             role: 'close'
+          }
+       ]
+    },
+    
+    {
+       role: 'help',
+       submenu: [
+          {
+               label: 'Documentation on Git',
+               click() { 
+                shell.openExternal('https://github.com/miir2709/encryption-decryption-software')
+            } 
+          }
+       ]
+    }
+ ]
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)
 app.whenReady().then(createWindow)
