@@ -70,15 +70,15 @@ const template = [
           }
        ]
     },
-    
+
     {
        role: 'help',
        submenu: [
           {
                label: 'Documentation on Git',
-               click() { 
+               click() {
                 shell.openExternal('https://github.com/miir2709/encryption-decryption-software')
-            } 
+            }
           }
        ]
     }

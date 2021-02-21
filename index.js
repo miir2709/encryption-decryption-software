@@ -28,8 +28,7 @@ $inputDiv.on('dragover', function(e) {
 
 async function dropHandler(e) {
     e.preventDefault();
-    var files = e.originalEvent.dataTransfer.files
-    console.log("files: "+files)
+    var files = e.originalEvent.dataTransfer.files // accepting files in [`file`] data type with attributes : name, path, etc
     if (files) {
         Swal.fire({
             title: 'Enter a security key:',
@@ -39,16 +38,13 @@ async function dropHandler(e) {
             allowOutsideClick: false,
         }).then((res) => { // entered security key
             if (res.value) {
-                console.log(res.value);
+                // console.log(res.value);
                 var numFiles = files.length;
                 let enc = new TextEncoder();
                 var keyAsBytes = enc.encode(res.value);
-                console.log(keyAsBytes);
                 for (var i = 0; i < files.length; i++) {
-                    ipcRenderer.send('ondragstart', files[i].path);
-                    console.log(files[i]);
+                    ipcRenderer.send('ondragstart', files[i].path); // sending path to Renderer code
                 }
-                console.log("hello i am going into handleFiles: ");
                 handleFiles(files, keyAsBytes);
                 console.log("bye i completed hellofiles");
                 Swal.fire({
@@ -65,14 +61,13 @@ async function dropHandler(e) {
 }
 
 function handleFiles(files, keyAsBytes) {
-    console.log("Inside handleFiles: files: "+files);
+    console.log("Inside handleFiles:");
     for (var i = 0; i < files.length; i++) {
         var f = files[i];
-        console.log(f);
-        console.log("about to spawn worker");
-        var w = new Worker('resources/fileHandler.js'); // worker thread can perform tasks without interfering with the user interfac
+        console.log("file object has an attribute `path`: "+f.path);
+        var w = new Worker('resources/fileHandler.js'); // worker thread can perform tasks without interfering with the user interface
         w.postMessage([f, keyAsBytes]);
-        w.onmessage = function(e) {
+        w.onmessage = function (e) { // e is the event
             if(e.data.status!="success"){
                 console.log("error");
                 new Noty({
@@ -81,16 +76,17 @@ function handleFiles(files, keyAsBytes) {
                     theme: 'sunset',
                 }).show();
             }else{
-                // console.log(e.data);
+                console.log("event.data: "+e.data.path);
                 new Noty({
                     text: `${e.data.fileNameToSave} is ready!`,
                     type: 'success',
                     theme: 'sunset',
                 })
-                .on('onClick', () => {
+                .on('onClick', () => { // saving the newly created .dcrypt file begins here
                     var blob = new Blob([e.data.bytesToSave], {
                         type: e.data.fileSaveType
                     });
+                    console.log("blob: " + blob.type);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
                     link.download = e.data.fileNameToSave;
@@ -138,7 +134,7 @@ var uploadFile = document.getElementById('upload');
 global.filepath = undefined; 
 
 if (uploadFile) {
-    console.log(__dirname)
+    // console.log(__dirname)
     uploadFile.addEventListener('click', () => {
         // If the platform is 'win32' or 'Linux' 
         if (process.platform !== 'darwin') {

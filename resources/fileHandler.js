@@ -9,16 +9,16 @@ onmessage = function(e) {
             var today = new Date();
 
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            console.log("encypt time before: " + time);
+            // console.log("encypt time before: " + time);
             encryptFile(file, this.result, e.data[1])
                 .then((res) => {
                     // console.log(res);
                     res.status = "success";
-                    console.log("worker finished encrypting");
+                    // console.log("worker finished encrypting");
                     postMessage(res);
                     var today = new Date();
                     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                    console.log("encypt time after: " + time);
+                    // console.log("encypt time after: " + time);
                         })
                 .catch(err => {
                     postMessage(err);
