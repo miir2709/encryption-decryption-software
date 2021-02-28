@@ -9,16 +9,13 @@ onmessage = function(e) {
             var today = new Date();
 
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            // console.log("encypt time before: " + time);
             encryptFile(file, this.result, e.data[1])
                 .then((res) => {
                     // console.log(res);
                     res.status = "success";
-                    // console.log("worker finished encrypting");
                     postMessage(res);
                     var today = new Date();
                     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                    // console.log("encypt time after: " + time);
                         })
                 .catch(err => {
                     postMessage(err);
@@ -31,9 +28,7 @@ onmessage = function(e) {
             console.log("decrypt time after: " + time);
             decryptFile(file, this.result, e.data[1])
                 .then((res) => {
-                    // console.log(res);
                     res.status = "success";
-                    // console.log("worker finished decrypting");
                     postMessage(res);
                 })
                 .catch(err => {
@@ -78,9 +73,7 @@ async function encryptFile(file, bytes, keyAsBytes) {
                 })
                 .then((encryptedContent) => {
                     const encryptedBytes = new Uint8Array(encryptedContent);
-                    // console.log(encryptedBytes);
                     const encryptedPackage = concatTypedArrays(concatTypedArrays(salt, iv), encryptedBytes)
-                    // console.log(encryptedPackage);
                     return {
                         // bytesToSave: Base64.fromByteArray(encryptedPackage),
                         bytesToSave: encryptedPackage,
@@ -96,7 +89,6 @@ async function decryptFile(file, bytes, keyAsBytes) {
     const salt = bytes.slice(0, 32);
     const iv = bytes.slice(32, 44);
     const encryptedData = bytes.slice(44);
-    console.log(salt, iv, encryptedData, bytes);
     return importSecretKey(keyAsBytes)
         .then((cryptoKey) => {
             return crypto.subtle.deriveKey({
@@ -119,8 +111,6 @@ async function decryptFile(file, bytes, keyAsBytes) {
                 .then((decryptedContent) => {
                     const decryptedBytes = new Uint8Array(decryptedContent);
                     var s = convertEnoughBytes(decryptedBytes, ";", 2);
-
-                    // console.log(s);
                     return {
                         bytesToSave: decryptedBytes.slice(getNthOccurrence(s, ";", 2)+1),
                         fileNameToSave: s.substring(0, getNthOccurrence(s, ";", 1)),

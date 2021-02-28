@@ -23,4 +23,16 @@ body{
     left: 50%;
     transform: translate(-50%, -50%);
     cursor: default;
+    visibility: visible;
+}
+
+#videoclip{
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    z-index: -1;
+    width: 100vw;
+    height: 100vh;
+    visibility: hidden;
 }
